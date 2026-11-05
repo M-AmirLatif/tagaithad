@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  html {
+    /* Fast, native 60fps/120fps scrolling without artificial wheel interception */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    @apply bg-brand-warm text-slate-800 antialiased font-sans;
+    min-height: 100vh;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-slate-900;
+  }
+}
+
+/* Accessible focus styling */
+:focus-visible {
+  outline: 2px solid #0b6b3a;
+  outline-offset: 2px;
+}
+
+/* Image rendering smoothness */
+img {
+  content-visibility: auto;
+}
