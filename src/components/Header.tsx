@@ -101,8 +101,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
   const currentActive = optimisticPath || pathname;
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-shadow">
-      {/* Top Notification Bar */}
+    <header className="relative w-full">
+      {/* Top Notification Bar - scrolls away naturally with page */}
       <div className="bg-brand-green-950 text-white text-xs py-2 px-3 sm:px-4 border-b border-brand-green-900">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2">
           {/* Motto & Landmark */}
@@ -142,20 +142,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
         </div>
       </div>
 
-      {/* Instant Navigation Progress Bar */}
-      {(isNavigating || isPending) && (
-        <div className="w-full h-1 bg-brand-green-950 overflow-hidden relative">
-          <div className="h-full bg-brand-gold-400 w-full animate-nav-progress" />
-        </div>
-      )}
-
-      {/* Main Navigation Bar */}
+      {/* Main Navigation Bar - Sticky to top */}
       <nav
-        className={`w-full bg-white transition-all ${
+        className={`sticky top-0 z-40 w-full bg-white transition-all ${
           scrolled ? 'shadow-md border-b border-slate-200' : 'border-b border-slate-100'
         }`}
         aria-label="Main Navigation"
       >
+        {/* Instant Navigation Progress Bar */}
+        {(isNavigating || isPending) && (
+          <div className="w-full h-1 bg-brand-green-950 overflow-hidden relative">
+            <div className="h-full bg-brand-gold-400 w-full animate-nav-progress" />
+          </div>
+        )}
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
             {/* Brand Logo & Name */}
