@@ -73,11 +73,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} overflow-x-hidden max-w-full`}>
-      <body className="min-h-screen flex flex-col bg-brand-warm text-slate-800 overflow-x-hidden max-w-full">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="min-h-screen flex flex-col bg-brand-warm text-slate-800">
         <SkipLink />
         <Header />
-        <main id="main-content" className="flex-1 focus:outline-none overflow-x-hidden max-w-full">
+        <main id="main-content" className="flex-1 focus:outline-none">
           {children}
         </main>
         <Footer />

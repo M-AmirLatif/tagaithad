@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -14,9 +14,41 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
   const pathname = usePathname();
   const router = useRouter();
 
+  const navLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Chairman', href: '/chairman' },
+    { label: 'Leadership', href: '/leadership' },
+    { label: 'Areas', href: '/areas' },
+    { label: 'Welfare', href: '/welfare' },
+    { label: 'Progress', href: '/progress' },
+    { label: 'News', href: '/news' },
+    { label: 'Notices', href: '/notifications' },
+    { label: 'Contact', href: '/contact' },
+  ];
+
+  // Prefetch all routes immediately on mount so navigation is instantaneous
+  useEffect(() => {
+    navLinks.forEach((link) => {
+      router.prefetch(link.href);
+    });
+  }, [router]);
+
+  // Reset optimistic state when pathname changes
+  useEffect(() => {
+    setOptimisticPath(null);
+    setIsNavigating(false);
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Passive scroll listener
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -31,10 +63,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -53,28 +81,28 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
     }
   }, [mobileMenuOpen]);
 
-  // Programmatic navigation to guarantee reliable routing on mobile
-  const handleMobileNavigate = (href: string) => {
+  // Unified, instantaneous navigation handler
+  const handleNavigate = (href: string) => {
+    if (pathname === href) {
+      setMobileMenuOpen(false);
+      return;
+    }
+
+    // Instant optimistic feedback in 0ms
+    setOptimisticPath(href);
+    setIsNavigating(true);
     setMobileMenuOpen(false);
-    router.push(href);
+
+    startTransition(() => {
+      router.push(href);
+    });
   };
 
-  const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'Chairman', href: '/chairman' },
-    { label: 'Leadership', href: '/leadership' },
-    { label: 'Areas', href: '/areas' },
-    { label: 'Welfare', href: '/welfare' },
-    { label: 'Progress', href: '/progress' },
-    { label: 'News', href: '/news' },
-    { label: 'Notices', href: '/notifications' },
-    { label: 'Contact', href: '/contact' },
-  ];
+  const currentActive = optimisticPath || pathname;
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-all duration-200">
-      {/* Top Notification Bar - Symmetrically Aligned on Mobile & Desktop */}
+    <header className="sticky top-0 z-40 w-full transition-shadow">
+      {/* Top Notification Bar */}
       <div className="bg-brand-green-950 text-white text-xs py-2 px-3 sm:px-4 border-b border-brand-green-900">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2">
           {/* Motto & Landmark */}
@@ -114,6 +142,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
         </div>
       </div>
 
+      {/* Instant Navigation Progress Bar */}
+      {(isNavigating || isPending) && (
+        <div className="w-full h-1 bg-brand-green-950 overflow-hidden relative">
+          <div className="h-full bg-brand-gold-400 w-full animate-nav-progress" />
+        </div>
+      )}
+
       {/* Main Navigation Bar */}
       <nav
         className={`w-full bg-white transition-all ${
@@ -123,10 +158,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
-            {/* Brand Logo & Name: Guaranteed Left-Aligned & Symmetrical */}
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0 group focus:outline-none focus:ring-2 focus:ring-brand-green-700 rounded-lg p-1"
+            {/* Brand Logo & Name */}
+            <button
+              type="button"
+              onClick={() => handleNavigate('/')}
+              className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0 group focus:outline-none focus:ring-2 focus:ring-brand-green-700 rounded-lg p-1 text-left"
               aria-label="Taga Ittehad Pakistan Home"
             >
               <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 flex-shrink-0">
@@ -147,17 +183,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
                   <span dir="rtl" className="inline-block">تگہ اتحاد پاکستان</span>
                 </span>
               </div>
-            </Link>
+            </button>
 
-            {/* Desktop Navigation Links with Strong Active Highlight */}
+            {/* Desktop Navigation Links with Instant Feedback & Hover Prefetch */}
             <div className="hidden lg:flex items-center space-x-1 xl:space-x-1.5 flex-shrink">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = currentActive === link.href;
                 return (
-                  <Link
+                  <button
                     key={link.href}
-                    href={link.href}
-                    className={`px-2.5 xl:px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-green-700 ${
+                    type="button"
+                    onClick={() => handleNavigate(link.href)}
+                    onMouseEnter={() => router.prefetch(link.href)}
+                    className={`px-2.5 xl:px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-green-700 cursor-pointer ${
                       isActive
                         ? 'bg-brand-green-800 text-white shadow-sm ring-1 ring-brand-green-900'
                         : 'text-slate-700 hover:text-brand-green-800 hover:bg-brand-green-50'
@@ -165,20 +203,21 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
                     aria-current={isActive ? 'page' : undefined}
                   >
                     {link.label}
-                  </Link>
+                  </button>
                 );
               })}
             </div>
 
-            {/* Header Right CTA: Dedicated Spacing */}
+            {/* Header Right CTA */}
             <div className="hidden sm:flex items-center gap-3 flex-shrink-0 pl-3 border-l border-slate-200">
-              <Link
-                href="/welfare"
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs xl:text-sm font-bold text-white bg-brand-green-700 hover:bg-brand-green-800 active:bg-brand-green-900 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green-700 whitespace-nowrap"
+              <button
+                type="button"
+                onClick={() => handleNavigate('/welfare')}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs xl:text-sm font-bold text-white bg-brand-green-700 hover:bg-brand-green-800 active:bg-brand-green-900 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green-700 whitespace-nowrap cursor-pointer"
               >
                 <Heart className="w-4 h-4 text-brand-gold-400 fill-brand-gold-400" aria-hidden="true" />
                 <span>Get Involved</span>
-              </Link>
+              </button>
             </div>
 
             {/* Mobile Hamburger Button */}
@@ -200,7 +239,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
           </div>
         </div>
 
-        {/* Mobile Menu Overlay & Drawer with Guaranteed Navigation */}
+        {/* Mobile Menu Overlay & Drawer */}
         {mobileMenuOpen && (
           <div
             className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm transition-opacity"
@@ -242,16 +281,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
                   </button>
                 </div>
 
-                {/* Mobile Links using Programmatic Router Push for 100% Reliable Navigation */}
+                {/* Mobile Links */}
                 <div className="py-4 space-y-1">
                   {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
+                    const isActive = currentActive === link.href;
                     return (
                       <button
                         key={link.href}
                         type="button"
-                        onClick={() => handleMobileNavigate(link.href)}
-                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left ${
+                        onClick={() => handleNavigate(link.href)}
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all text-left cursor-pointer ${
                           isActive
                             ? 'bg-brand-green-800 text-white shadow-sm'
                             : 'text-slate-700 hover:bg-slate-100 hover:text-brand-green-800'
@@ -269,8 +308,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDonate }) => {
               <div className="pt-6 border-t border-slate-200 space-y-3">
                 <button
                   type="button"
-                  onClick={() => handleMobileNavigate('/welfare')}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-brand-green-700 hover:bg-brand-green-800 rounded-xl shadow min-h-[44px]"
+                  onClick={() => handleNavigate('/welfare')}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-white bg-brand-green-700 hover:bg-brand-green-800 rounded-xl shadow min-h-[44px] cursor-pointer"
                 >
                   <Heart className="w-4 h-4 text-brand-gold-400 fill-brand-gold-400" aria-hidden="true" />
                   <span>Get Involved / Donate</span>
