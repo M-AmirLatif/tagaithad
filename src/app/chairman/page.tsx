@@ -83,19 +83,23 @@ export default function ChairmanPage() {
 
             {/* Right: Message to the Community */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <Quote className="w-8 h-8 text-brand-gold-500 flex-shrink-0" aria-hidden="true" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-brand-gold-50 text-brand-gold-600 flex items-center justify-center flex-shrink-0 border border-brand-gold-200">
+                    <Quote className="w-5 h-5 text-brand-gold-600" aria-hidden="true" />
+                  </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900">
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
                       Message to the Community
                     </h2>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-500 block">
                       Taga Ittehad Pakistan (Central Assembly)
                     </span>
                   </div>
                 </div>
-                <DemoBadge label={chairmanProfile.messageStatus} variant="draft" />
+                <div className="self-start sm:self-auto flex-shrink-0">
+                  <DemoBadge label={chairmanProfile.messageStatus} variant="draft" />
+                </div>
               </div>
 
               <div className="prose prose-slate max-w-none text-slate-700 space-y-4 text-sm sm:text-base leading-relaxed">

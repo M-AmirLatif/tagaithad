@@ -63,8 +63,8 @@ export default function NotificationsPage() {
         </div>
 
         {/* Filter Controls */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <div className="relative flex-1 w-full">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
               <input
@@ -78,9 +78,9 @@ export default function NotificationsPage() {
             </div>
 
             {/* Year Selector */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
+                <Calendar className="w-3.5 h-3.5 text-brand-green-700" aria-hidden="true" />
                 Year:
               </span>
               <div className="flex gap-1">
@@ -91,7 +91,7 @@ export default function NotificationsPage() {
                     onClick={() => setSelectedYear(yr)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                       selectedYear === yr
-                        ? 'bg-brand-green-700 text-white shadow-sm'
+                        ? 'bg-brand-green-800 text-white shadow-sm'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
@@ -103,7 +103,7 @@ export default function NotificationsPage() {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-slate-100" role="tablist">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-3 border-t border-slate-100" role="tablist">
             <Filter className="w-4 h-4 text-slate-400 flex-shrink-0 mr-1" aria-hidden="true" />
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;
@@ -114,9 +114,9 @@ export default function NotificationsPage() {
                   onClick={() => setSelectedCategory(cat)}
                   role="tab"
                   aria-selected={isActive}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                     isActive
-                      ? 'bg-brand-green-700 text-white font-semibold shadow-sm'
+                      ? 'bg-brand-green-800 text-white font-semibold shadow-sm ring-1 ring-brand-green-900'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >

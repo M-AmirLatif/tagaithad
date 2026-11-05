@@ -52,47 +52,49 @@ export default function ProgressPage() {
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center justify-center gap-2 border-b border-slate-200 pb-4" role="tablist">
-          <button
-            type="button"
-            onClick={() => setActiveTab('timeline')}
-            role="tab"
-            aria-selected={activeTab === 'timeline'}
-            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'timeline'
-                ? 'bg-brand-green-800 text-white shadow-md'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            Chronological Timeline
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('charts')}
-            role="tab"
-            aria-selected={activeTab === 'charts'}
-            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'charts'
-                ? 'bg-brand-green-800 text-white shadow-md'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            Growth Charts (Demo)
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('goals')}
-            role="tab"
-            aria-selected={activeTab === 'goals'}
-            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-              activeTab === 'goals'
-                ? 'bg-brand-green-800 text-white shadow-md'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            Goals for 2027
-          </button>
+        {/* Tab Navigation - Unified Segmented Control */}
+        <div className="w-full max-w-xl mx-auto" role="tablist" aria-label="Progress views">
+          <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200">
+            <button
+              type="button"
+              onClick={() => setActiveTab('timeline')}
+              role="tab"
+              aria-selected={activeTab === 'timeline'}
+              className={`flex items-center justify-center text-center px-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all min-h-[48px] ${
+                activeTab === 'timeline'
+                  ? 'bg-brand-green-800 text-white shadow-sm'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
+              }`}
+            >
+              <span>Chronological Timeline</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('charts')}
+              role="tab"
+              aria-selected={activeTab === 'charts'}
+              className={`flex items-center justify-center text-center px-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all min-h-[48px] ${
+                activeTab === 'charts'
+                  ? 'bg-brand-green-800 text-white shadow-sm'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
+              }`}
+            >
+              <span>Growth Charts <span className="text-[11px] font-normal opacity-80 block sm:inline">(Demo)</span></span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('goals')}
+              role="tab"
+              aria-selected={activeTab === 'goals'}
+              className={`flex items-center justify-center text-center px-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all min-h-[48px] ${
+                activeTab === 'goals'
+                  ? 'bg-brand-green-800 text-white shadow-sm'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
+              }`}
+            >
+              <span>Goals for 2027</span>
+            </button>
+          </div>
         </div>
 
         {/* Tab 1: Chronological Timeline - Redesigned for Crystal-Clear Data and Compact Images */}

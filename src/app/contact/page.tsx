@@ -45,7 +45,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Official Contact Details */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-6">
               <h2 className="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
                 Central Office Details
               </h2>
@@ -147,7 +147,7 @@ export default function ContactPage() {
 
           {/* Right Column: Contact Form (UI Only) */}
           <div className="lg:col-span-7">
-            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-6">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-xl font-bold text-slate-900">
                   Send a Public Message
@@ -242,7 +242,7 @@ export default function ContactPage() {
                       placeholder="Write your message, request, or inquiry..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-700 bg-slate-50 focus:bg-white resize-y"
+                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-700 bg-slate-50 focus:bg-white resize-none"
                     />
                   </div>
 
